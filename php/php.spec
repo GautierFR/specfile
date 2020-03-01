@@ -19,7 +19,7 @@
 
 %define major 7
 %define minor 3
-%define fix 14
+%define fix 15
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
@@ -492,6 +492,11 @@ done
 sed 's|@EXTENSION_DIR@|%{extension_dir}|; s|@SYSCONF_DIR@|%{sysconfdir_php}|' \
     php.ini-production > %{buildroot}%{_sysconfdir}/php.ini
 
+# the RPM packages used to put php.ini in /etc/php.ini but PHP looks for /etc/php/php.ini
+mv %{buildroot}%{_sysconfdir}/php.ini %{buildroot}%{_sysconfdir}/php/php.ini
+# ...but symlink it in case (XXX: good idea?)
+ln -s %{sysconfdir_php}/php.ini %{buildroot}%{_sysconfdir}/php.ini
+
 mv %{buildroot}%{sysconfdir_php}/php-fpm.conf.default %{buildroot}%{sysconfdir_php}/php-fpm.conf
 
 sed 's|user = nobody|user = qtmhhttp|; s|group = nobody|;group = nobody|' \
@@ -520,6 +525,8 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 #%dir /var/lib/php
 #%dir {_libdir}/php/PEAR
 
+%config(noreplace) %{_sysconfdir}/php/php.ini
+# symlink to above
 %config(noreplace) %{_sysconfdir}/php.ini
 
 %dir %{sysconfdir_php}
@@ -754,6 +761,10 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Tue Feb 25 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.15-0qsecofr
+- Bump
+- Look for php.ini in the directory that PHP says it looks. This tripped up a bunch of people before...
+
 * Fri Jan 24 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.14-0qsecofr
 - Bump
 - Enable libzip (will need rebuild on sonaming tho)
