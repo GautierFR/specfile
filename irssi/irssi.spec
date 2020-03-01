@@ -2,11 +2,12 @@
 %define perl_sitearch %(eval "`perl -V:installsitearch`"; echo $installsitearch)
 %define perl_archlibexp %(eval "`perl -V:archlibexp`"; echo $archlibexp)
 %define perl_version %(eval "`perl -V:version`"; echo $version)
+%define perl_libpath /QOpenSys/pkgs/lib/perl5/%{perl_version}/aix-thread-multi-64all/CORE
 
 Summary: Modular text mode IRC client with Perl scripting
 Name: irssi
 Version: 1.2.2
-Release: 1qsecofr
+Release: 2qsecofr
 License: GPLv2+
 Source0: https://github.com/%{name}/%{name}/releases/download/%{version}/%{name}-%{version}.tar.xz
 URL: http://irssi.org
@@ -37,9 +38,10 @@ This package contains headers needed to develop irssi plugins.
 %build
 
 autoreconf -fiv .
+# rpath is hacky
 %configure \
     CPPFLAGS="-pthread" \
-    LDFLAGS="-maix${OBJECT_MODE} -pthread -Wl,-brtl -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/lib -L%{_libdir}" \
+    LDFLAGS="-maix${OBJECT_MODE} -pthread -Wl,-brtl -Wl,-blibpath:%{perl_libpath}:%{_libdir}:/QOpenSys/usr/lib -L%{_libdir}" \
     --with-aix-soname=svr4 \
     --enable-shared --disable-static \
     --enable-true-color \
@@ -79,5 +81,8 @@ find $RPM_BUILD_ROOT%{perl_vendorarch} -type f -a -name .packlist -exec rm {} ';
 %{_includedir}/irssi/
 
 %changelog
+* Sun Feb 9 2020 Calvin Buckley <calvin@cmpct.info> 1.2.2-1qsecofr
+- Fix perl rpath
+
 * Sun Feb 9 2020 Calvin Buckley <calvin@cmpct.info> 1.2.2-1qsecofr
 - New package
