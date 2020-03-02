@@ -1,0 +1,49 @@
+diff --git a/configure.ac b/configure.ac
+index 380eea7..fcb5309 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -563,7 +563,7 @@ AC_SUBST(MANFORMAT)
+ # Figure out the platform.
+ AC_MSG_CHECKING(platform)
+ case "$host_os" in
+-	*aix*)
++	*aix*|*os400*)
+ 		AC_MSG_RESULT(aix)
+ 		PLATFORM=aix
+ 		;;
+diff --git a/osdep-aix.c b/osdep-aix.c
+index e1ce491..5648cfe 100644
+--- a/osdep-aix.c
++++ b/osdep-aix.c
+@@ -28,6 +28,9 @@
+ char *
+ osdep_get_name(__unused int fd, char *tty)
+ {
++#ifdef __PASE__
++	return (NULL);
++#else
+ 	struct psinfo	 p;
+ 	char		*path;
+ 	ssize_t		 bytes;
+@@ -54,11 +57,13 @@ osdep_get_name(__unused int fd, char *tty)
+ 		return (NULL);
+ 
+ 	return (xstrdup(p.pr_fname));
++#endif
+ }
+ 
+ char *
+ osdep_get_cwd(int fd)
+ {
++#ifndef __PASE__
+ 	static char      target[MAXPATHLEN + 1];
+ 	char            *path;
+ 	const char      *ttypath;
+@@ -85,6 +90,7 @@ osdep_get_cwd(int fd)
+ 			target[len - 1] = '\0';
+ 		return (target);
+ 	}
++#endif
+ 	return (NULL);
+ }
+ 
