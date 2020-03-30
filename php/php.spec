@@ -19,7 +19,7 @@
 
 %define major 7
 %define minor 3
-%define fix 15
+%define fix 16
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
@@ -56,6 +56,8 @@ BuildRequires: unixODBC-devel
 BuildRequires: libwebp-devel
 BuildRequires: xz-devel
 BuildRequires: zlib-devel
+BuildRequires: openldap-devel
+BuildRequires: libXpm-devel
 
 %if %{with reconf}
 BuildRequires: autoconf
@@ -173,6 +175,12 @@ Summary: gd extension for PHP
 
 %description gd
 gd extension for PHP
+
+%package ldap
+Summary: ldap extension for PHP
+
+%description ldap
+ldap extension for PHP
 
 %package gettext
 Summary: gettext extension for PHP
@@ -357,6 +365,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --enable-ftp=shared \
     --enable-hash \
     --enable-libxml \
+    --with-ldap=shared,%{_prefix} \
     --enable-mbstring=shared \
     --enable-mysqlnd=shared \
     --enable-pcntl=yes \
@@ -412,7 +421,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --with-jpeg-dir=%{_prefix} \
     --with-png-dir=%{_prefix} \
     --with-freetype-dir=%{_prefix} \
-    --with-xpm-dir=/QOpenSys/usr/lib \
+    --with-xpm-dir=%{_prefix} \
     --with-zlib=yes \
     --with-zlib-dir=%{_prefix} \
     # end
@@ -634,6 +643,11 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %{extension_dir}/gd.so
 %config(noreplace) %{sysconfdir_php}/conf.d/20-gd.ini
 
+%files ldap
+%defattr(-, qsys, *none)
+%{extension_dir}/ldap.so
+%config(noreplace) %{sysconfdir_php}/conf.d/20-ldap.ini
+
 %files gettext
 %defattr(-, qsys, *none)
 %{extension_dir}/gettext.so
@@ -761,6 +775,11 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Sat Mar 28 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.16-0qsecofr
+- Bump
+- Enable LDAP
+- Use qsecofr libXpm instead of base PASE libXpm
+
 * Tue Feb 25 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.15-0qsecofr
 - Bump
 - Look for php.ini in the directory that PHP says it looks. This tripped up a bunch of people before...
