@@ -4,8 +4,8 @@
 
 
 Name:    libzip
-Version: 1.5.2
-Release: 2qsecofr
+Version: 1.6.1
+Release: 1qsecofr
 Summary: C library for reading, creating, and modifying zip archives
 
 License: BSD
@@ -136,11 +136,11 @@ gmake test
 %{_mandir}/man3/libzip*
 %{_mandir}/man3/zip*
 %{_mandir}/man3/ZIP*
-# Not entirely right, but
-%{_datadir}/doc/libzip/*.html
-
 
 %changelog
+* Sat Mar 28 2020 Calvin Buckley <calvin@cmpct.info> - 1.6.1-1qsecofr
+- Bump and rebuild with new CMake
+
 * Tue Dec 10 2019 Calvin Buckley <calvin@cmpct.info> - 1.5.2-2qsecofr
 - Conversion for PASE
 
