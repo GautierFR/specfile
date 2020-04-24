@@ -1,5 +1,7 @@
 %bcond_with reconf
 
+%define rpm_xpm 1
+
 # zip extension requires libzip: https://libzip.org/
 %define zip 1
 
@@ -19,7 +21,7 @@
 
 %define major 7
 %define minor 3
-%define fix 16
+%define fix 17
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
@@ -421,7 +423,11 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --with-jpeg-dir=%{_prefix} \
     --with-png-dir=%{_prefix} \
     --with-freetype-dir=%{_prefix} \
+%if %{rpm_xpm}
     --with-xpm-dir=%{_prefix} \
+%else
+    --with-xpm-dir=/QOpenSys/usr/lib \
+%endif
     --with-zlib=yes \
     --with-zlib-dir=%{_prefix} \
     # end
@@ -775,6 +781,9 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Fri Apr 17 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.17-0qsecofr
+- Bump
+
 * Sat Mar 28 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.16-0qsecofr
 - Bump
 - Enable LDAP
