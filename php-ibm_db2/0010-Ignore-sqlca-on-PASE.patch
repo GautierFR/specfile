@@ -1,0 +1,28 @@
+From 668f82f6ebce45f2411bc332fae30a4e59b412c5 Mon Sep 17 00:00:00 2001
+From: Kevin Adler <kadler@us.ibm.com>
+Date: Fri, 15 Feb 2019 14:13:24 -0600
+Subject: [PATCH 10/11] Ignore sqlca on PASE
+
+Signed-off-by: Kevin Adler <kadler@us.ibm.com>
+---
+ ibm_db2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/ibm_db2.c b/ibm_db2.c
+index 47af824..e9a59e5 100644
+--- a/ibm_db2.c
++++ b/ibm_db2.c
+@@ -2555,8 +2555,9 @@ static int _php_db2_connect_helper( INTERNAL_FUNCTION_PARAMETERS, conn_handle **
+     SQLINTEGER try_date_len = SQL_NTS;
+     char guard_uid[DB2_IBM_I_PROFILE_UID_MAX + 1];
+     SQLINTEGER try_auto = 0;
+-#endif /* PASE */
++#else
+     struct sqlca sqlca;
++#endif /* PASE */
+ 
+     conn_alive = 1;
+ 
+-- 
+2.25.1
+

@@ -1,0 +1,63 @@
+From bb8544431551235f1b9cf2fd8390f3774d9f48db Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Fri, 24 Apr 2020 14:01:23 -0300
+Subject: [PATCH 11/11] Use sqlcli-devel on PASE for headers
+
+---
+ config.m4 | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
+
+diff --git a/config.m4 b/config.m4
+index b7eac53..ed1e757 100644
+--- a/config.m4
++++ b/config.m4
+@@ -76,25 +76,31 @@ if test "$PHP_IBM_DB2" != "no"; then
+     fi
+   fi
+ 
+-  AC_MSG_CHECKING([for DB2 CLI include files in default path])
+-  for i in $SEARCH_PATH ; do
+-    AC_MSG_CHECKING([in $i])
+-    dnl this is for V8.1 and previous
+-    if test -r "$i/include/sqlcli1.h" ; then
+-      IBM_DB2_DIR=$i
+-      AC_MSG_RESULT(found in $i)
+-      break
++  if test -r $LIB_DIR/libdb400.a ; then
++    dnl PASE doesn't need that, we'll use the sqlcli-devel package.
++    PHP_ADD_INCLUDE(/QOpenSys/pkgs/include/cli)
++  else
++    dnl but LUW/Connect will
++    AC_MSG_CHECKING([for DB2 CLI include files in default path])
++    for i in $SEARCH_PATH ; do
++      AC_MSG_CHECKING([in $i])
++      dnl this is for V8.1 and previous
++      if test -r "$i/include/sqlcli1.h" ; then
++        IBM_DB2_DIR=$i
++        AC_MSG_RESULT(found in $i)
++        break
++      fi
++    done
++
++    if test -z "$IBM_DB2_DIR"; then
++      AC_MSG_RESULT([not found])
++      AC_MSG_ERROR([Please reinstall the DB2 CLI distribution])
+     fi
+-  done
+ 
+-  if test -z "$IBM_DB2_DIR"; then
+-    AC_MSG_RESULT([not found])
+-    AC_MSG_ERROR([Please reinstall the DB2 CLI distribution])
++    dnl # --with-IBM_DB2 -> add include path
++    PHP_ADD_INCLUDE($IBM_DB2_DIR/include)
+   fi
+ 
+-  dnl # --with-IBM_DB2 -> add include path
+-  PHP_ADD_INCLUDE($IBM_DB2_DIR/include)
+-
+   dnl # --with-IBM_DB2 -> check for lib and symbol presence
+   if test -r $LIB_DIR/libdb400.a ; then
+     LIBNAME=db400
+-- 
+2.25.1
+

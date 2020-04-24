@@ -1,0 +1,74 @@
+From b1302fd49cb487b12cdc6a4cababa4bde5833961 Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Mon, 20 Apr 2020 11:42:27 -0300
+Subject: [PATCH 01/11] db400 doesn't like autocommit this way, change
+ addressing/length
+
+this still doesn't seem quite right, but it passes tests?
+
+python ibm_db seems to do it like this
+---
+ ibm_db2.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/ibm_db2.c b/ibm_db2.c
+index fb0c820..5015620 100644
+--- a/ibm_db2.c
++++ b/ibm_db2.c
+@@ -1581,8 +1581,12 @@ static void _php_db2_assign_options( void *handle, int type, char *opt_key, zval
+                      * with this option.
+                      */
+                     pvParam = SQL_AUTOCOMMIT_ON;
++#ifdef PASE
++                    rc = SQLSetConnectAttr((SQLHDBC)((conn_handle*)handle)->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)&pvParam, SQL_NTS);
++#else
+                     rc = SQLSetConnectAttr((SQLHDBC)((conn_handle*)handle)->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)(intptr_t)pvParam, SQL_IS_INTEGER);
+-                    if ( rc == SQL_ERROR ) {
++#endif
++                    if ( rc != SQL_SUCCESS ) {
+                         _php_db2_check_sql_errors((SQLHSTMT)((conn_handle*)handle)->hdbc, SQL_HANDLE_DBC, rc, 1, NULL, -1, 1 TSRMLS_CC);
+                     } else {
+                         /*Set the local flag to requested autocommit value*/
+@@ -1593,8 +1597,12 @@ static void _php_db2_assign_options( void *handle, int type, char *opt_key, zval
+ 
+                 case DB2_AUTOCOMMIT_OFF:
+                     pvParam = SQL_AUTOCOMMIT_OFF;
++#ifdef PASE
++                    rc = SQLSetConnectAttr((SQLHDBC)((conn_handle*)handle)->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)&pvParam, SQL_NTS);
++#else
+                     rc = SQLSetConnectAttr((SQLHDBC)((conn_handle*)handle)->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)(intptr_t)pvParam, SQL_IS_INTEGER);
+-                    if ( rc == SQL_ERROR ) {
++#endif
++                    if ( rc != SQL_SUCCESS ) {
+                         _php_db2_check_sql_errors((SQLHSTMT)((conn_handle*)handle)->hdbc, SQL_HANDLE_DBC, rc, 1, NULL, -1, 1 TSRMLS_CC);
+                     } else {
+                         ((conn_handle*)handle)->auto_commit = 0;
+@@ -2762,7 +2770,11 @@ static int _php_db2_connect_helper( INTERNAL_FUNCTION_PARAMETERS, conn_handle **
+             rc = SQLSetConnectAttr((SQLHDBC)conn_res->hdbc, SQL_ATTR_DBC_SYS_NAMING, (SQLPOINTER)(intptr_t)SQL_TRUE, SQL_IS_INTEGER);
+         }
+         /* 1.9.7 - default autocommit=on before _php_db2_parse_options (comment add only) */ 
++#ifdef PASE
++        rc = SQLSetConnectAttr((SQLHDBC)conn_res->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)&(conn_res->auto_commit), SQL_NTS);
++#else
+         rc = SQLSetConnectAttr((SQLHDBC)conn_res->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)(intptr_t)(conn_res->auto_commit), SQL_IS_INTEGER);
++#endif
+ #ifdef PASE /* 1.9.7 - IBM i  moved before _php_db2_parse_options (bug) */
+         /* orig  - IBM i SQL_ATTR_JOB_SORT_SEQUENCE (customer request DB2 PTF) */
+         if (IBM_DB2_G(i5_job_sort) > 0) {
+@@ -3125,8 +3137,12 @@ PHP_FUNCTION(db2_autocommit)
+                 php_error_docref(NULL TSRMLS_CC, E_WARNING, "value must be one of DB2_AUTOCOMMIT_ON or DB2_AUTOCOMMIT_OFF");
+                 RETURN_FALSE;
+             }
++#ifdef PASE
++            rc = SQLSetConnectAttr((SQLHDBC)conn_res->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)&autocommit, SQL_NTS);
++#else
+             rc = SQLSetConnectAttr((SQLHDBC)conn_res->hdbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)(intptr_t)autocommit, SQL_IS_INTEGER);
+-            if ( rc == SQL_ERROR ) {
++#endif
++            if ( rc != SQL_SUCCESS ) {
+                 _php_db2_check_sql_errors((SQLHDBC)conn_res->hdbc, SQL_HANDLE_DBC, rc, 1, NULL, -1, 1 TSRMLS_CC);
+                 RETURN_FALSE;
+             } else {
+-- 
+2.25.1
+

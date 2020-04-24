@@ -1,0 +1,26 @@
+From 9fb3095ccba1f561bd239d24a805b128219ba00b Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Mon, 20 Apr 2020 18:50:05 -0300
+Subject: [PATCH 05/11] Make sure this is our default library
+
+---
+ tests/test_V6_10931_LcaseTableName.phpt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tests/test_V6_10931_LcaseTableName.phpt b/tests/test_V6_10931_LcaseTableName.phpt
+index 5b7ed56..26edafc 100644
+--- a/tests/test_V6_10931_LcaseTableName.phpt
++++ b/tests/test_V6_10931_LcaseTableName.phpt
+@@ -9,7 +9,8 @@ IBM-DB2: PECL bug 10931 -- no result for db2_columns with lowercase table name
+ 
+ require_once('connection.inc');
+ 
+-$conn = db2_connect($database, $user, $password);
++// HACK: so you dont need to run as a "DB2" user; make sure you have the DB2 schema made though
++$conn = db2_connect($database, $user, $password, array('i5_lib' => 'DB2'));
+ 
+ if ($conn) {
+ 		 $sql = "DROP TABLE \"DB2\".\"test_10931\"";
+-- 
+2.25.1
+

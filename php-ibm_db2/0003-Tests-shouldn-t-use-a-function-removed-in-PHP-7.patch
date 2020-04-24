@@ -1,0 +1,81 @@
+From 11ec9dc6d786b411d58efd20f9a45e87a09b5e49 Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Mon, 20 Apr 2020 11:45:30 -0300
+Subject: [PATCH 03/11] Tests shouldn't use a function removed in PHP 7
+
+---
+ tests/test_V6_060_Tables_01.phpt    | 2 +-
+ tests/test_V6_061_Tables_02.phpt    | 2 +-
+ tests/test_V6_062_Tables_03.phpt    | 2 +-
+ tests/test_V6_064_Tables_05.phpt    | 2 +-
+ tests/test_V6_066_TableObjects.phpt | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/tests/test_V6_060_Tables_01.phpt b/tests/test_V6_060_Tables_01.phpt
+index 02400c3..be9a824 100644
+--- a/tests/test_V6_060_Tables_01.phpt
++++ b/tests/test_V6_060_Tables_01.phpt
+@@ -30,7 +30,7 @@ if ($conn)
+    $i = 0;
+    while ($row=db2_fetch_both($result))
+    {
+-      if (eregi("T1|T2|T3|T4",$row[2])) {			
++      if (preg_match("/T1|T2|T3|T4/i",$row[2])) {			
+       if ($i < 4) print $row[1] . "/" . $row[2] . "\n";
+       $i++;
+       }
+diff --git a/tests/test_V6_061_Tables_02.phpt b/tests/test_V6_061_Tables_02.phpt
+index 5b9e245..8437fb9 100644
+--- a/tests/test_V6_061_Tables_02.phpt
++++ b/tests/test_V6_061_Tables_02.phpt
+@@ -30,7 +30,7 @@ if ($conn)
+    $i = 0;
+    while ($row = db2_fetch_both($result)) 
+    {
+-      if (eregi("T1|T2|T3|T4",$row['TABLE_NAME'])) {			
++      if (preg_match("/T1|T2|T3|T4/i",$row['TABLE_NAME'])) {			
+       $str = $row['TABLE_SCHEM'] . $row['TABLE_NAME'] . $row['TABLE_TYPE'];
+       if ($i < 4) print $str . "\n";
+       $i++;
+diff --git a/tests/test_V6_062_Tables_03.phpt b/tests/test_V6_062_Tables_03.phpt
+index d80ec9b..7f045bc 100644
+--- a/tests/test_V6_062_Tables_03.phpt
++++ b/tests/test_V6_062_Tables_03.phpt
+@@ -31,7 +31,7 @@ if ($conn)
+    $i = 0;
+    while ($row = db2_fetch_both($result)) 
+    {
+-      if (eregi("T1|T2|T3|T4",$row[2])) {			
++      if (preg_match("/T1|T2|T3|T4/i",$row[2])) {			
+       $str = $row[1] ."/". $row[2] ."/". $row[3];
+       if ($i < 4) print $str . "\n";
+       $i++;
+diff --git a/tests/test_V6_064_Tables_05.phpt b/tests/test_V6_064_Tables_05.phpt
+index dab2028..599b314 100644
+--- a/tests/test_V6_064_Tables_05.phpt
++++ b/tests/test_V6_064_Tables_05.phpt
+@@ -35,7 +35,7 @@ print "\n\n";
+ $i = 0;
+ while ($row=db2_fetch_array($result))
+ {
+-    if (eregi("T1|T2|T3|T4",$row[2])) {
++    if (preg_match("/T1|T2|T3|T4/i",$row[2])) {
+     db2_num_fields($result);
+     if ($i < 4) print ", " . $row[1] . ", " . $row[2] . ", " . $row[3] . ", , \n";
+     $i++;
+diff --git a/tests/test_V6_066_TableObjects.phpt b/tests/test_V6_066_TableObjects.phpt
+index 1e2be88..b33e088 100644
+--- a/tests/test_V6_066_TableObjects.phpt
++++ b/tests/test_V6_066_TableObjects.phpt
+@@ -12,7 +12,7 @@ $conn = db2_connect($database, $user, $password);
+ $result = db2_tables($conn, NULL, strtoupper($user), 'ANIM%');
+ 
+ while ($row = db2_fetch_object($result)) {
+-    if (eregi("ANIME_CAT|ANIMALS",$row->TABLE_NAME)) {
++    if (preg_match("/ANIME_CAT|ANIMALS/i",$row->TABLE_NAME)) {
+     echo 'Schema:  ' . $row->TABLE_SCHEM . "\n";
+     echo 'Name:    ' . $row->TABLE_NAME . "\n";
+     echo 'Type:    ' . $row->TABLE_TYPE . "\n";
+-- 
+2.25.1
+

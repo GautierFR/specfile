@@ -1,0 +1,125 @@
+From 234a6d8ed16849a7ad609e378108e592d110b27d Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Thu, 23 Apr 2020 19:12:09 -0300
+Subject: [PATCH 09/11] Fix nonsense test behaviour
+
+It printed far more than it expected, combined it not expecting
+error messages to be printed. Handle this. (The fix is kinda ugly,
+but I have to wonder how this was ever supposed to work in the
+first place.)
+---
+ ...1a_PrepExecuteDataTypeConversionsErrs.phpt | 42 +++++++++----------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/tests/test_V6_131a_PrepExecuteDataTypeConversionsErrs.phpt b/tests/test_V6_131a_PrepExecuteDataTypeConversionsErrs.phpt
+index 842239f..17f1e5f 100644
+--- a/tests/test_V6_131a_PrepExecuteDataTypeConversionsErrs.phpt
++++ b/tests/test_V6_131a_PrepExecuteDataTypeConversionsErrs.phpt
+@@ -83,11 +83,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('PK_pass0', 'fakeUserID');
+ 	//print "Updating TESTTABLE with 'fake' USERID" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with USERID = '1' (PK Test).
+ 	$stmt = db2_prepare($conn , $updateRow);
+@@ -136,11 +136,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('SINT_pass0', 'fakeNUMBER_SINT');
+ 	//print "Updating TESTTABLE with 'fake' NUMBER_SINT" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with NUMBER_SINT = '1' (SMALLINT Test).
+ 	$stmt = db2_prepare($conn , $updateRow);
+@@ -189,11 +189,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('INT_pass0', 'fakeNUMBER_INT');
+ 	//print "Updating TESTTABLE with 'fake' NUMBER_INT" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with NUMBER_INT = '1' (INTEGER Test).
+ 	$stmt = db2_prepare($conn , $updateRow);
+@@ -242,11 +242,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('BINT_pass0', 'fakeNUMBER_BINT');
+ 	//print "Updating TESTTABLE with 'fake' NUMBER_BINT" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with NUMBER_BINT = '1' (BIGINT Test).
+ 	$stmt = db2_prepare($conn , $updateRow);
+@@ -294,11 +294,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('DOU_pass0', 'fakeNUMBER_DOU');
+ 	//print "Updating TESTTABLE with NUMBER_DOU = 'fake'" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with NUMBER_DOU = '1000' (DOUBLE Test).
+ 	$updateRow = "UPDATE TESTTABLE SET PASSWORD = ? WHERE NUMBER_DOU = ?";
+@@ -349,11 +349,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('DOU_pass0', 'fakeNUMBER_R');
+ 	//print "Updating TESTTABLE with NUMBER_R = 'fake'" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with NUMBER_R = '1000' (REAL Test).
+ 	$updateRow = "UPDATE TESTTABLE SET PASSWORD = ? WHERE NUMBER_R = ?";
+@@ -404,11 +404,11 @@ if ($conn) {
+ 	$stmt = db2_prepare($conn , $updateRow);
+ 	$parameters = array('DOU_pass0', 'fakeNUMBER_DEC');
+ 	//print "Updating TESTTABLE with NUMBER_DEC = 'fake'" . "\n";
+-	$result = db2_execute($stmt, $parameters);
+-	if($result) {
++	$result = @db2_execute($stmt, $parameters);
++	if(!$result) {
+ 		print "Test case failed." . "\n";
+ 	}
+-	print db2_num_rows($stmt) . "\n";
++	else print @db2_num_rows($stmt) . "\n";
+ 
+ 	//Updating row with NUMBER_DEC = '1000' (DECIMAL Test).
+ 	$updateRow = "UPDATE TESTTABLE SET PASSWORD = ? WHERE NUMBER_DEC = ?";
+-- 
+2.25.1
+

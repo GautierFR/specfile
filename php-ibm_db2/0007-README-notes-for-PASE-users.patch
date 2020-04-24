@@ -1,0 +1,89 @@
+From cd52e8ecc890925b8d931945ceaebd270f3a7a7d Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Thu, 23 Apr 2020 14:33:33 -0300
+Subject: [PATCH 07/11] README notes for PASE users
+
+---
+ README.md | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+diff --git a/README.md b/README.md
+index 2a01ad1..15cd62b 100644
+--- a/README.md
++++ b/README.md
+@@ -2,7 +2,16 @@
+ 
+ Interface for PHP to DB2 for z/OS, DB2 for LUW, DB2 for i.
+ 
+-## Prerequisite
++## IBM i PASE users
++
++You will need the XPF SQL/CLI headers on the include path. See the [specfile](https://github.com/MonoOni/specfile/tree/master/php-ibm_db2) for how to generate these and other instructions on how to invoke configure.
++(The `sqlcli-devel` package in Yum isn't enough, sadly.)
++
++Cairns' replacement libdb400 is not yet tested, but may be desirable due to its greater debugging features.
++
++## LUW/Db2 Connect users
++
++### Prerequisites
+ 
+ CLIDRIVER should be installed in your system.
+ If not installed Download from the below link.
+@@ -13,10 +22,10 @@ PHP, gcc, make, tar should be installed in your system.
+ 
+ You may not find gcc, make, tar in some of the docker containers (Example Amazon Linux2).
+ In such cases use below command to install gcc etc.
+-```
++```bash
+ yum install make gcc
+ ```
+-## How to install php ibm_db2 extension in Linux/Mac.
++### How to install php ibm_db2 extension in Linux/Mac.
+ ```
+ if IBM_DB_HOME and LD_LIBRARY_PATH environment variable not set then set them with installed CLIDRIVER.
+ (say CLIDRIVER installed at "/home/user/clidriver")
+@@ -43,7 +52,7 @@ In case of Docker(Example Amazon Linux2):
+    the HTTP server environment, add the LD_LIBRARY_PATH variable in the httpd.conf file.
+ 
+ ```
+-## How to install php ibm_db2 extension in Windows
++### How to install php ibm_db2 extension in Windows
+ ```
+ Set CLIDRIVER\bin path to PATH environment variable.
+ 
+@@ -60,11 +69,11 @@ set PATH=<CLIDRIVER installed path>\bin;%PATH%
+ 	  extension=php_ibm_db2
+ ```
+ 
+-## How to run sample program
++### How to run sample program
+ 
+-### connect.php:-
++#### connect.php:-
+ 
+-```
++```php
+ <?php
+ $database = 'dsn name';
+ $user = 'user';
+@@ -82,7 +91,7 @@ else {
+ 
+ To run the sample:- php connect.php
+ ```
+-## How to build from source code in Linux or Mac
++### How to build from source code in Linux or Mac
+ ```
+ Use the commands included in the source code:
+ download Source code from https://pecl.php.net/package/ibm_db2
+@@ -94,7 +103,7 @@ download Source code from https://pecl.php.net/package/ibm_db2
+       $ make
+       $ make install
+ ```
+-## How to build from source code in Windows
++### How to build from source code in Windows
+ ```
+ Below blog mentiones how to build php ibm_db2 from source in windows.
+ https://www.ibm.com/developerworks/community/blogs/96960515-2ea1-4391-8170-b0515d08e4da/entry/Install_PHP_ibm_db2_Driver?lang=en
+-- 
+2.25.1
+

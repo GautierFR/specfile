@@ -1,0 +1,35 @@
+From 410882609f381607e95f99affe3d7bd52f6ff445 Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Mon, 20 Apr 2020 13:00:34 -0300
+Subject: [PATCH 04/11] This test would always fail because it prints what it
+ doesn't expect
+
+---
+ tests/test_V6_133_ExecuteLongInputParams.phpt | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/tests/test_V6_133_ExecuteLongInputParams.phpt b/tests/test_V6_133_ExecuteLongInputParams.phpt
+index b73310f..4d4e0bc 100644
+--- a/tests/test_V6_133_ExecuteLongInputParams.phpt
++++ b/tests/test_V6_133_ExecuteLongInputParams.phpt
+@@ -17,7 +17,7 @@ if (!$conn) {
+ }
+ 
+ $stmt = db2_prepare($conn, $sql);
+-$res = db2_execute($stmt, array(128, 'hacker of human and technological nature', 'Wez the ruler of all things PECL', 88.3));
++$res = @db2_execute($stmt, array(128, 'hacker of human and technological nature', 'Wez the ruler of all things PECL', 88.3));
+ var_dump($res);
+ print "SQLSTATE: " . db2_stmt_error($stmt);
+ print "\nMessage: " . db2_stmt_errormsg($stmt);
+@@ -31,5 +31,6 @@ db2_rollback($conn);
+ 
+ ?>
+ --EXPECTF--
+-%s(false)
+-%sMessage: Value for column or variable NAME too long.
++bool(false)
++SQLSTATE: 22001
++Message: Value for column or variable NAME too long.
+-- 
+2.25.1
+

@@ -1,0 +1,26 @@
+From 0849e50b7d9afb502c3fba408b8dce68686343b0 Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Thu, 23 Apr 2020 16:59:09 -0300
+Subject: [PATCH 08/11] Hebrew test prints twice, also make it care about the
+ output
+
+---
+ tests/test_V6_hebrew.phpt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tests/test_V6_hebrew.phpt b/tests/test_V6_hebrew.phpt
+index 0b72bb4..0ad9f0e 100644
+--- a/tests/test_V6_hebrew.phpt
++++ b/tests/test_V6_hebrew.phpt
+@@ -38,6 +38,7 @@ The conversion from 62211 to 1200 or 1208 (ST 5 to ST 10) results in no reorderi
+ 
+ ?>
+ --EXPECTF--
+-%s
++IBM i data string "123Eאבג"
++IBM i data string "123Eאבג"
+ success
+ 
+-- 
+2.25.1
+

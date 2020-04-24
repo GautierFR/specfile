@@ -1,0 +1,58 @@
+From 652866d7809842027d79dca1f8a453ab9d260e62 Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Thu, 23 Apr 2020 13:40:47 -0300
+Subject: [PATCH 06/11] DescribeParam returns a too-small for BIGINT precision
+ of 8, override
+
+Fixes test_V6_bigint and doesn't seem to cause regressions.
+---
+ ibm_db2.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/ibm_db2.c b/ibm_db2.c
+index 5015620..47af824 100644
+--- a/ibm_db2.c
++++ b/ibm_db2.c
+@@ -3183,7 +3183,15 @@ static void _php_db2_add_param_cache( stmt_handle *stmt_res, int param_no, char
+         tmp_curr = (param_node *)ecalloc(1, sizeof(param_node));
+         /* assign values */
+         tmp_curr->data_type = data_type;
++#ifdef PASE
++       /*
++        * HACK: A bigint test fails with truncation because DescribeParam
++        * returns a precision of 8, which isn't accurate. (CB 20200423)
++        */
++        tmp_curr->param_size = data_type == SQL_BIGINT ? 20 : precision;
++#else
+         tmp_curr->param_size = precision;
++#endif
+         tmp_curr->nullable = nullable;
+         tmp_curr->scale = scale;
+         tmp_curr->param_num = param_no;
+@@ -3214,7 +3222,11 @@ static void _php_db2_add_param_cache( stmt_handle *stmt_res, int param_no, char
+         /* Both the nodes are for the same param no */
+         /* Replace Information */
+         curr->data_type = data_type;
++#ifdef PASE
++        curr->param_size = data_type == SQL_BIGINT ? 20 : precision;
++#else
+         curr->param_size = precision;
++#endif
+         curr->nullable = nullable;
+         curr->scale = scale;
+         curr->param_num = param_no;
+@@ -4468,7 +4480,11 @@ static param_node* _php_db2_build_list( stmt_handle *stmt_res, int param_no, SQL
+     tmp_curr = (param_node *)ecalloc(1, sizeof(param_node));
+     /* assign values */
+     tmp_curr->data_type = data_type;
++#ifdef PASE
++    tmp_curr->param_size = data_type == SQL_BIGINT ? 20 : precision;
++#else
+     tmp_curr->param_size = precision;
++#endif
+     tmp_curr->nullable = nullable;
+     tmp_curr->scale = scale;
+     tmp_curr->param_num = param_no;
+-- 
+2.25.1
+

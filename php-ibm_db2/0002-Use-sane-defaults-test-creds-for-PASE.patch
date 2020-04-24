@@ -1,0 +1,31 @@
+From 259b063a3b26caad8d48b861957c1f8c93818206 Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Mon, 20 Apr 2020 11:44:13 -0300
+Subject: [PATCH 02/11] Use sane defaults test creds for PASE
+
+Remember to create a scheme for your default library name - same
+as username? Also schema DB2. CRTLIB doesn't make the necessary
+journaling sludge required.
+---
+ tests/connection.inc | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tests/connection.inc b/tests/connection.inc
+index d043a61..a2d0edd 100644
+--- a/tests/connection.inc
++++ b/tests/connection.inc
+@@ -1,8 +1,8 @@
+ <?php
+ 
+-$database = 'sample';
+-$user = 'db2inst1';
+-$password = 'password';
++$database = '*LOCAL';
++$user = '';
++$password = '';
+ $hostname = 'localhost';
+ $port = 60000;
+ $url = 'no url';
+-- 
+2.25.1
+
