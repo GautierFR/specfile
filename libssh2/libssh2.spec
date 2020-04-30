@@ -80,16 +80,19 @@ echo "Running tests for %{_arch}"
 LC_ALL=EN_US make -C tests check
 
 %files
+%defattr(-, qsys, *none)
 %{!?_licensedir:%global license %%doc}
 %license COPYING
 %doc docs/AUTHORS README RELEASE-NOTES
 %{_libdir}/libssh2.so.1
 
 %files docs
+%defattr(-, qsys, *none)
 %doc docs/BINDINGS docs/HACKING docs/TODO NEWS
 %{_mandir}/man3/libssh2_*.3*
 
 %files devel
+%defattr(-, qsys, *none)
 %doc example.%{_arch}/
 %{_includedir}/libssh2.h
 %{_includedir}/libssh2_publickey.h
