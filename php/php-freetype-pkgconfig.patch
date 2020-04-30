@@ -1,0 +1,44 @@
+From c2355f2b6f193f26ee0c6e0479c760e8bd3daf9b Mon Sep 17 00:00:00 2001
+From: Calvin Buckley <calvin@cmpct.info>
+Date: Sat, 25 Apr 2020 14:57:25 -0300
+Subject: [PATCH] Don't use freetype-config, use pkg-config for freetype
+
+Proper fix is in #3632, but might be too dependent on 7.4 changes.
+---
+ ext/gd/config.m4 | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/ext/gd/config.m4 b/ext/gd/config.m4
+index 498d870785..695ee75efb 100644
+--- a/ext/gd/config.m4
++++ b/ext/gd/config.m4
+@@ -183,21 +183,14 @@ AC_DEFUN([PHP_GD_XPM],[
+ 
+ AC_DEFUN([PHP_GD_FREETYPE2],[
+   if test "$PHP_FREETYPE_DIR" != "no"; then
++    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+ 
+-    for i in $PHP_FREETYPE_DIR /usr/local /usr; do
+-      if test -f "$i/bin/freetype-config"; then
+-        FREETYPE2_DIR=$i
+-        FREETYPE2_CONFIG="$i/bin/freetype-config"
+-        break
+-      fi
+-    done
+-
+-    if test -z "$FREETYPE2_DIR"; then
+-      AC_MSG_ERROR([freetype-config not found.])
++    if ! $PKG_CONFIG --exists freetype2; then
++      AC_MSG_ERROR(freetype2 is not installed)
+     fi
+ 
+-    FREETYPE2_CFLAGS=`$FREETYPE2_CONFIG --cflags`
+-    FREETYPE2_LIBS=`$FREETYPE2_CONFIG --libs`
++    FREETYPE2_CFLAGS=`$PKG_CONFIG --cflags freetype2`
++    FREETYPE2_LIBS=`$PKG_CONFIG --libs freetype2`
+ 
+     PHP_EVAL_INCLINE($FREETYPE2_CFLAGS)
+     PHP_EVAL_LIBLINE($FREETYPE2_LIBS, GD_SHARED_LIBADD)
+-- 
+2.25.1
+

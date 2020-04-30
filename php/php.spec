@@ -21,11 +21,11 @@
 
 %define major 7
 %define minor 3
-%define fix 17
+%define fix 18
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
-Release: 0qsecofr
+Release: 1qsecofr
 License: PHP-3.01
 Summary: PHP programming language
 Url: https://www.php.net
@@ -36,6 +36,8 @@ Patch0: php-ini.patch
 Patch1: php-opcache-flock.patch
 Patch2: php-no-sigprof-on-pase.patch
 Patch3: php-fpm-allow-non-root.patch
+Patch4: php-freetype-pkgconfig.patch
+Patch5: php-pear-xml.patch
 
 BuildRequires: pkg-config
 
@@ -59,7 +61,9 @@ BuildRequires: libwebp-devel
 BuildRequires: xz-devel
 BuildRequires: zlib-devel
 BuildRequires: openldap-devel
+%if %{rpm_xpm}
 BuildRequires: libXpm-devel
+%endif
 
 %if %{with reconf}
 BuildRequires: autoconf
@@ -301,6 +305,8 @@ zip extension for PHP
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 # PHP extensions expect to find include files in some_dir/include and
 # libraries to be in some_dir/lib so that you can pass --with-ext=some_dir
@@ -319,6 +325,8 @@ ln -s %{_libdir}/libiconv.so* libiconv/lib
 autoreconf -fi
 %else
 %define _host powerpc64-ibm-aix6
+# Some patches make us regenerate the build system
+./buildconf --force
 %endif
 
 %define sysconfdir_php    %{_sysconfdir}/php
@@ -781,6 +789,10 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Thu Apr 30 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.17-1qsecofr
+- Build fixes (ft2, pear w/o existing PHP) for newer packages
+- libXpm RPM isn't required if not using it
+
 * Fri Apr 17 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.17-0qsecofr
 - Bump
 

@@ -1,0 +1,14 @@
+diff --git a/pear/Makefile.frag b/pear/Makefile.frag
+index 528683ba1b..57188c8288 100644
+--- a/pear/Makefile.frag
++++ b/pear/Makefile.frag
+@@ -3,7 +3,7 @@
+ peardir=$(PEAR_INSTALLDIR)
+ 
+ # Skip all php.ini files altogether
+-PEAR_INSTALL_FLAGS = -n -dshort_open_tag=0 -dopen_basedir= -derror_reporting=1803 -dmemory_limit=-1 -ddetect_unicode=0
++PEAR_INSTALL_FLAGS = -n -dshort_open_tag=0 -dopen_basedir= -derror_reporting=1803 -dmemory_limit=-1 -ddetect_unicode=0 -dextension_dir=$(top_builddir)/modules -dextension=xml.so
+ 
+ WGET = `which wget 2>/dev/null`
+ FETCH = `which fetch 2>/dev/null`
+
