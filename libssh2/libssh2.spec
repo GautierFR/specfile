@@ -33,7 +33,7 @@ SECSH-DHGEX(04), and SECSH-NUMBERS(10).
 %package	devel
 Summary:	Development files for libssh2
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	pkgconfig
+Requires:	pkg-config
 
 %description	devel
 The libssh2-devel package contains libraries and header files for
