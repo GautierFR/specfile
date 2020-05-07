@@ -21,11 +21,11 @@
 
 %define major 7
 %define minor 3
-%define fix 18
+%define fix 17
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
-Release: 1qsecofr
+Release: 2qsecofr
 License: PHP-3.01
 Summary: PHP programming language
 Url: https://www.php.net
@@ -63,6 +63,7 @@ BuildRequires: zlib-devel
 BuildRequires: oniguruma-devel
 BuildRequires: pcre-devel
 BuildRequires: openldap-devel
+BuildRequires: libtidy-devel
 %if %{rpm_xpm}
 BuildRequires: libXpm-devel
 %endif
@@ -279,6 +280,12 @@ Requires: libsqlite3-0 >= 3.19.3-1
 %description sqlite3
 sqlite3 extensions for PHP
 
+%package tidy
+Summary: tidy extension for PHP
+
+%description tidy
+tidy extension for PHP
+
 %package tokenizer
 Summary: tokenizer extension for PHP
 
@@ -399,6 +406,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --enable-sysvmsg=shared \
     --enable-sysvsem=shared \
     --enable-sysvshm=shared \
+    --with-tidy=shared,%{_prefix} \
     --enable-tokenizer=shared \
     --enable-xml=shared \
     --enable-xmlreader=shared \
@@ -760,6 +768,11 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %{extension_dir}/pdo_sqlite.so
 %config(noreplace) %{sysconfdir_php}/conf.d/30-pdo_sqlite.ini
 
+%files tidy
+%defattr(-, qsys, *none)
+%{extension_dir}/tidy.so
+%config(noreplace) %{sysconfdir_php}/conf.d/20-tidy.ini
+
 %files tokenizer
 %defattr(-, qsys, *none)
 %{extension_dir}/tokenizer.so
@@ -793,6 +806,10 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Thu May 7 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.17-2qsecofr
+- oniguruma now unvendored
+- enable tidy
+
 * Thu Apr 30 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.17-1qsecofr
 - Build fixes (ft2, pear w/o existing PHP) for newer packages
 - libXpm RPM isn't required if not using it
