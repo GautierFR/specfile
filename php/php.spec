@@ -60,6 +60,8 @@ BuildRequires: unixODBC-devel
 BuildRequires: libwebp-devel
 BuildRequires: xz-devel
 BuildRequires: zlib-devel
+BuildRequires: oniguruma-devel
+BuildRequires: pcre-devel
 BuildRequires: openldap-devel
 %if %{rpm_xpm}
 BuildRequires: libXpm-devel
@@ -364,6 +366,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --disable-phpdbg \
     --disable-rpath \
     --enable-fpm \
+    --with-pcre-regex=%{_prefix} \
     --enable-shared=yes \
     --enable-bcmath=shared \
     --enable-calendar=shared \
@@ -377,6 +380,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --enable-libxml \
     --with-ldap=shared,%{_prefix} \
     --enable-mbstring=shared \
+    --with-onig=%{_prefix} \
     --enable-mysqlnd=shared \
     --enable-pcntl=yes \
     --enable-pdo=shared \
