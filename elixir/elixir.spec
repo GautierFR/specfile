@@ -1,5 +1,5 @@
 Name: elixir
-Version: 1.10.0
+Version: 1.10.3
 Release: 1qsecofr
 Summary: Dynamic, functional language designed for building scalable and maintainable applications
 License: Apache-2.0
@@ -49,5 +49,8 @@ export LC_ALL=EN_US
 %{_mandir}/man1/mix.1
 
 %changelog
+* Thu May 14 2020 Calvin Buckley <calvin@cmpct.info> 1.10.3-1qsecofr
+- Bump
+
 * Wed Feb 5 2020 Calvin Buckley <calvin@cmpct.info> 1.10.0-1qsecofr
 - Init
