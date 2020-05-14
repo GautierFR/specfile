@@ -1,7 +1,7 @@
 # XXX: The hardcoding of PHP version is very ugly, need to figure out how to solve elegantly
 %define php_version 7.3
 Name:        php-xdebug
-Version:     2.9.0
+Version:     2.9.5
 Release:     1qsecofr
 Summary:     Provides functions for function traces and profiling
 
@@ -11,6 +11,8 @@ Source0:     https://xdebug.org/files/xdebug-%{version}.tgz
 Source1:     php-xdebug-99-xdebug.ini
 
 BuildRequires: php-devel >= %{php_version}
+# For flock
+BuildRequires: libutil-devel
 # For fix-rpath
 BuildRequires: pase-build-tools
 # For tests
@@ -50,7 +52,7 @@ Xdebug also provides:
 
 phpize --clean
 phpize
-%configure --enable-xdebug
+%configure --enable-xdebug LDFLAGS="-L/QOpenSys/pkgs/lib -lutil"
 %make_build
 # Ugh, there's no aix-soname support, so it'll only generate a shared .a and
 # get confused. Let's fix that.
@@ -72,11 +74,16 @@ gmake test || true
 
 %files
 %defattr(-, qsys, *none)
-%doc CREDITS README.rst LICENSE
+%doc CREDITS README.rst
+%license LICENSE
 %config(noreplace) %{_sysconfdir}/php/conf.d/99-xdebug.ini
 %{_libdir}/php-%{php_version}/extensions/xdebug.so
 
 %changelog
+* Thu May 14 2020 Calvin Buckley <calvin@cmpct.info> - 2.9.5-1qsecofr
+- Bump
+- Fix flock issue when compiling
+
 * Thu Dec 19 2019 Calvin Buckley <calvin@cmpct.info> - 2.9.0-1qsecofr
 - First version
 
