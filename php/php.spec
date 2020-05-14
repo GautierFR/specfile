@@ -21,11 +21,11 @@
 
 %define major 7
 %define minor 3
-%define fix 17
+%define fix 18
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
-Release: 2qsecofr
+Release: 0qsecofr
 License: PHP-3.01
 Summary: PHP programming language
 Url: https://www.php.net
@@ -61,7 +61,8 @@ BuildRequires: libwebp-devel
 BuildRequires: xz-devel
 BuildRequires: zlib-devel
 BuildRequires: oniguruma-devel
-BuildRequires: pcre-devel
+# XXX: pcre != pcre2
+#BuildRequires: pcre-devel
 BuildRequires: openldap-devel
 BuildRequires: libtidy-devel
 %if %{rpm_xpm}
@@ -241,6 +242,14 @@ Summary: openssl extension for PHP
 %description openssl
 openssl extension for PHP
 
+%package pgsql
+Summary: pgsql extension for PHP
+BuildRequires: postgresql12-devel
+Requires: %{name}-pdo
+
+%description pgsql
+pgsql extension for PHP
+
 %package phar
 Summary: phar extension for PHP
 
@@ -252,6 +261,13 @@ Summary: process extension for PHP
 
 %description process
 process extension for PHP
+
+%package readline
+Summary: readline extension for PHP
+BuildRequires: readline-devel
+
+%description readline
+readline extension for PHP
 
 %package soap
 Summary: soap extension for PHP
@@ -373,7 +389,9 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --disable-phpdbg \
     --disable-rpath \
     --enable-fpm \
+%if 0
     --with-pcre-regex=%{_prefix} \
+%endif
     --enable-shared=yes \
     --enable-bcmath=shared \
     --enable-calendar=shared \
@@ -388,6 +406,9 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --with-ldap=shared,%{_prefix} \
     --enable-mbstring=shared \
     --with-onig=%{_prefix} \
+    --with-readline=shared,%{_prefix} \
+    --with-pgsql=shared,%{_prefix} \
+    --with-pdo-pgsql=shared,%{_prefix} \
     --enable-mysqlnd=shared \
     --enable-pcntl=yes \
     --enable-pdo=shared \
@@ -723,6 +744,14 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %{extension_dir}/openssl.so
 %config(noreplace) %{sysconfdir_php}/conf.d/20-openssl.ini
 
+%files pgsql
+%defattr(-, qsys, *none)
+%{extension_dir}/pgsql.so
+%config(noreplace) %{sysconfdir_php}/conf.d/20-pgsql.ini
+
+%{extension_dir}/pdo_pgsql.so
+%config(noreplace) %{sysconfdir_php}/conf.d/30-pdo_pgsql.ini
+
 %files phar
 %defattr(-, qsys, *none)
 %{extension_dir}/phar.so
@@ -744,6 +773,11 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 
 %{extension_dir}/sysvshm.so
 %config(noreplace) %{sysconfdir_php}/conf.d/20-sysvshm.ini
+
+%files readline
+%defattr(-, qsys, *none)
+%{extension_dir}/readline.so
+%config(noreplace) %{sysconfdir_php}/conf.d/20-readline.ini
 
 %files soap
 %defattr(-, qsys, *none)
@@ -806,6 +840,10 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Thu May 14 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.18-0qsecofr
+- Bump
+- readline, pg
+
 * Thu May 7 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.17-2qsecofr
 - oniguruma now unvendored
 - enable tidy
