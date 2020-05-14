@@ -1,5 +1,5 @@
 Name: erlang
-Version: 22.2
+Version: 23.0
 Release: 1qsecofr
 Summary: General-purpose programming language and runtime environment
 License: Apache-2.0
@@ -9,10 +9,6 @@ URL: http://www.erlang.org
 Source: http://www.erlang.org/download/otp_src_%{version}.tar.gz
 Source1: http://www.erlang.org/download/otp_doc_html_%{version}.tar.gz
 Source2: http://www.erlang.org/download/otp_doc_man_%{version}.tar.gz
-Patch1: erlang-aix.patch
-Patch2: erlang-getifaddrs.patch
-Patch3: erlang-esock.diff
-Patch4: erlang-linker.patch
 # XXX: Not a complete solution. Unfortunately, LDFLAGS gets passed around for
 # both ld and cxxld invocations. This gets some, but not all. This does mean
 # some ugly rpath on many binaries for now, unfortunately...
@@ -104,10 +100,6 @@ Documentation for Erlang.
 
 %setup -q -n otp_src_%{version}
 
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 %patch5 -p1
 
 
@@ -167,6 +159,9 @@ tar -C ${RPM_BUILD_ROOT}%{_libdir}/erlang -zxf %{SOURCE2}
 #%{_libdir}/erlang/Install -minimal %{_libdir}/erlang &>/dev/null
 
 %changelog
+* Thu May 14 2020 Calvin Buckley <calvin@cmpct.info> 23.0-1qsecofr
+- Update to OTP 23
+
 * Tue Jan 21 2020 Calvin Buckley <calvin@cmpct.info> 22.2-1qsecofr
 - Update to OTP 22.2
 
