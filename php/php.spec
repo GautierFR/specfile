@@ -333,17 +333,6 @@ zip extension for PHP
 %patch4 -p1
 %patch5 -p1
 
-# PHP extensions expect to find include files in some_dir/include and
-# libraries to be in some_dir/lib so that you can pass --with-ext=some_dir
-# This assumption is broken with libiconv though, since it puts its includes
-# in a subdirectory: /QOpenSys/pkgs/include/libiconv while the libraries
-# are in the normal library path. To work around this, we symlink everything
-# in to a common subdirectory here:
-
-mkdir -p libiconv/include libiconv/lib
-ln -s %{_includedir}/libiconv/* libiconv/include
-ln -s %{_libdir}/libiconv.so* libiconv/lib
-
 %build
 
 %if %{with reconf}
@@ -447,7 +436,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --with-curl=shared,%{_prefix} \
     --with-gd=shared \
     --with-gettext=shared,%{_prefix} \
-    --with-iconv=shared,$PWD/libiconv \
+    --with-iconv=shared,%{_prefix} \
     --with-openssl=shared,%{_prefix} \
     --with-sodium=shared,%{_prefix} \
     --with-xsl=shared,%{_prefix} \
