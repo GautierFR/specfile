@@ -25,7 +25,7 @@
 
 Name: php
 Version: %{major}.%{minor}.%{fix}
-Release: 0qsecofr
+Release: 1qsecofr
 License: PHP-3.01
 Summary: PHP programming language
 Url: https://www.php.net
@@ -185,6 +185,13 @@ Summary: gd extension for PHP
 
 %description gd
 gd extension for PHP
+
+%package gmp
+Summary: gmp extension for PHP
+BuildRequires: gmp-devel
+
+%description gmp
+gmp extension for PHP
 
 %package ldap
 Summary: ldap extension for PHP
@@ -436,6 +443,7 @@ LDFLAGS="-Wl,-brtl -pthread -Wl,-bbigtoc -Wl,-blibpath:%{_libdir}:/QOpenSys/usr/
     --with-curl=shared,%{_prefix} \
     --with-gd=shared \
     --with-gettext=shared,%{_prefix} \
+    --with-gmp=shared,%{_prefix} \
     --with-iconv=shared,%{_prefix} \
     --with-openssl=shared,%{_prefix} \
     --with-sodium=shared,%{_prefix} \
@@ -689,6 +697,11 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %{extension_dir}/gettext.so
 %config(noreplace) %{sysconfdir_php}/conf.d/20-gettext.ini
 
+%files gmp
+%defattr(-, qsys, *none)
+%{extension_dir}/gmp.so
+%config(noreplace) %{sysconfdir_php}/conf.d/20-gmp.ini
+
 %files iconv
 %defattr(-, qsys, *none)
 %{extension_dir}/iconv.so
@@ -829,6 +842,10 @@ rm %{buildroot}%{sysconfdir_php}/php-fpm.d/www.conf.default
 %endif
 
 %changelog
+* Mon May 25 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.18-1qsecofr
+- Enable gmp
+- Remove iconv hack
+
 * Thu May 14 2020 Calvin Buckley <calvin@cmpct.info> - 7.3.18-0qsecofr
 - Bump
 - readline, pg
